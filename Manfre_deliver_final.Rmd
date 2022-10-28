@@ -1,0 +1,467 @@
+---
+title: "R Notebook"
+output: html_notebook
+studnet name: Dylan Manfre, Abbi Ross, Ryan Mercado, Sanunu Bah
+paragrah: Sanunu's paragraph
+
+Paragraph: “We set the pace in fundraising — including raising more money in Maryland and having 73% of donations $100 or less — because this campaign has inspired thousands of people from all walks of life in Maryland and across the country who see the opportunity to make Wes Moore governor of Maryland and change the trajectories of families who have been left behind,” the campaign said in a statement."
+
+Date: Oct. 6, 2022
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+
+options(scipen=999)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+
+("/Volumes/Elements/D-Drive/University of Maryland/Classes/Fall 2022/Data Journalism/Github Repository/Data_Journalism_2022_Fall/reverse_engeneering/Manfre_deliver_03/")
+
+
+```
+
+```{r}
+
+wes_moore_data <- read_csv("data/Contributionslist.csv")
+
+```
+```{r}
+### making the column names lowercase with underscore
+clean_wes_moore_data <- wes_moore_data %>% 
+clean_names()
+
+```
+
+```{r}
+### change the dates to be the proper format
+clean_dates <- clean_wes_moore_data %>% 
+mutate(contribution_date = mdy(contribution_date))
+head(clean_dates)
+
+```
+
+```{r}
+### Changing chr field to number field
+clean_dates %>% 
+mutate(across(contribution_amount, as.numeric))
+head(clean_dates)
+```
+
+```{r}
+clean_dates %>%
+filter(contribution_amount <= 100) %>% 
+arrange(desc(contribution_amount))
+
+
+### We were able to get the code to show donations of 100 or less but unable to arrange them from greatest to least. Whenever I did arrange(desc(contribution_amount)) it only showed me donations of 100. 
+
+
+```
+
+### Sentence 2
+
+* **Sentence text**: “Tom Perez, a former leader of the Democratic National Committee, raised nearly $1.7 million in donations from outside Maryland.”
+
+
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+I was able to come very close to figuring this out. I was able to create a state column and populate it with the correct information but filtering for multiple fields is what is tripping me up even after I tried googling the information. 
+
+
+```{r}
+# Put code to reverse engineer sentence here
+### Tom Perez out of state data
+
+perez_data <- read_csv(("data/perez_data.csv"))
+
+perez_data <- perez_data %>% 
+clean_names()
+
+###
+
+
+# Put code to reverse engineer sentence here]
+
+```{r}
+# Put code to reverse engineer sentence here]
+perez_state_data <- perez_data %>% 
+   mutate(contributor_state = case_when(
+    str_detect(contributor_address, " NJ ") ~ "New Jersey",
+    str_detect(contributor_address, " NM ") ~ "New Mexico",
+    str_detect(contributor_address, " NY ") ~  "New York",
+    str_detect(contributor_address, " NC ") ~ "North Carolina",
+    str_detect(contributor_address, " ND ") ~ "North Dakota",
+    str_detect(contributor_address, " OH ") ~ "Ohio",
+    str_detect(contributor_address, " OK ") ~ "Oklahoma",
+    str_detect(contributor_address, " OR ") ~ "Oregon",
+    str_detect(contributor_address, " PA ") ~ "Pennsylvania",
+    str_detect(contributor_address, " RI ") ~ "Rhode Island",
+    str_detect(contributor_address, " SC ") ~ "South Carolina",
+    str_detect(contributor_address, " SD ") ~ "South Dakota",
+    str_detect(contributor_address, " TN ") ~ "Tennessee",
+    str_detect(contributor_address, " TX ") ~ "Texas",
+    str_detect(contributor_address, " UT ") ~ "Utah",
+    str_detect(contributor_address, " VT ") ~ "Vermont",
+    str_detect(contributor_address, " VA ") ~ "Virginia",
+    str_detect(contributor_address, " WA ") ~ "Washington",
+    str_detect(contributor_address, " WV ") ~ "West Virginia",
+    str_detect(contributor_address, " WI ") ~ "Wisconsin",
+    str_detect(contributor_address, " WY ") ~ "Wyoming",
+    str_detect(contributor_address, " AL ") ~ "Alabama",
+    str_detect(contributor_address, " AK ") ~  "Alaska",
+    str_detect(contributor_address, " AZ ") ~  "Arizona",
+    str_detect(contributor_address, " AR ") ~  "Arkansas",
+    str_detect(contributor_address, " CA ") ~  "California",
+    str_detect(contributor_address, " CO ") ~ "Colorado",
+    str_detect(contributor_address, " CT ") ~  "Connecticut",
+    str_detect(contributor_address, " DE ") ~  "Delaware",
+    str_detect(contributor_address, " FL ") ~  "Florida",
+    str_detect(contributor_address, " GA ") ~  "Georgia",
+    str_detect(contributor_address, " HI ") ~ "Hawaii",
+    str_detect(contributor_address, " ID ") ~  "Idaho",
+    str_detect(contributor_address, " IL ") ~  "Illinois",
+    str_detect(contributor_address, " IN ") ~  "Indiana",
+    str_detect(contributor_address, " IA ") ~  "Iowa",
+    str_detect(contributor_address, " KS ") ~ "Kansas",
+    str_detect(contributor_address, " KY ") ~  "Kentucky",
+    str_detect(contributor_address, " LA ") ~  "Louisiana",
+    str_detect(contributor_address, " ME ") ~  "Maine",
+    str_detect(contributor_address, " MD ") ~  "Maryland",
+    str_detect(contributor_address, " MA ") ~  "Massachusetts",
+    str_detect(contributor_address, " MI ") ~  "Michigan",
+    str_detect(contributor_address, " MN ") ~ "Minnesota",
+    str_detect(contributor_address, " MS ") ~  "Mississippi",
+    str_detect(contributor_address, " MO ") ~  "Missouri",
+    str_detect(contributor_address, " NE ") ~  "Nebraska",
+    str_detect(contributor_address, " NV ") ~ "Nevada",
+    str_detect(contributor_address, " NH ") ~ "New Hampshire",
+    str_detect(contributor_address, " DC ") ~ "DC",
+    str_detect(contributor_address, " MT ") ~ "Montana",
+    str_detect(contributor_address, " PR ") ~ "Puerto Rico",
+    TRUE ~ contributor_address
+  ))
+
+```{r}
+### Here I am trying to remove Maryland entirely from the data set so I can add the values that do not include Maryland.
+perez_state_data %>% 
+Filter(contributor_state != "Maryland")
+
+perez_state_data %>% 
+group_by(contributor_state) %>%
+summarise(total_state = sum(contribution_amount),
+            mean_amount= mean(contribution_amount),
+          n=n()) %>% 
+arrange(desc(total_state))
+
+
+````
+
+
+
+
+
+# Display results of code below this codeblock
+
+```
+### Sentence 3
+
+* **Sentence text**: Moore, a U.S. Army veteran and bestselling author, built a campaign war chest that included over $2.3 million in out-of-state contributions
+
+
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+"df %>%
+  filter(!col_name %in% c('value1', 'value2', 'value3', ...))" 
+  This is what I found online for how to filter for everything except a vlue but I'm unsure of how to interpret it and apply it to my code. I tried multiple times but
+
+
+```{r}
+# Put code to reverse engineer sentence here
+
+### Wes Moore's out of state
+### change perez dataset to be wes moore
+```{r}
+moore_state_data <- clean_dates %>% 
+   mutate(contributor_state = case_when(
+    str_detect(contributor_address, " NJ ") ~ "New Jersey",
+    str_detect(contributor_address, " NM ") ~ "New Mexico",
+    str_detect(contributor_address, " NY ") ~  "New York",
+    str_detect(contributor_address, " NC ") ~ "North Carolina",
+    str_detect(contributor_address, " ND ") ~ "North Dakota",
+    str_detect(contributor_address, " OH ") ~ "Ohio",
+    str_detect(contributor_address, " OK ") ~ "Oklahoma",
+    str_detect(contributor_address, " OR ") ~ "Oregon",
+    str_detect(contributor_address, " PA ") ~ "Pennsylvania",
+    str_detect(contributor_address, " RI ") ~ "Rhode Island",
+    str_detect(contributor_address, " SC ") ~ "South Carolina",
+    str_detect(contributor_address, " SD ") ~ "South Dakota",
+    str_detect(contributor_address, " TN ") ~ "Tennessee",
+    str_detect(contributor_address, " TX ") ~ "Texas",
+    str_detect(contributor_address, " UT ") ~ "Utah",
+    str_detect(contributor_address, " VT ") ~ "Vermont",
+    str_detect(contributor_address, " VA ") ~ "Virginia",
+    str_detect(contributor_address, " WA ") ~ "Washington",
+    str_detect(contributor_address, " WV ") ~ "West Virginia",
+    str_detect(contributor_address, " WI ") ~ "Wisconsin",
+    str_detect(contributor_address, " WY ") ~ "Wyoming",
+    str_detect(contributor_address, " AL ") ~ "Alabama",
+    str_detect(contributor_address, " AK ") ~  "Alaska",
+    str_detect(contributor_address, " AZ ") ~  "Arizona",
+    str_detect(contributor_address, " AR ") ~  "Arkansas",
+    str_detect(contributor_address, " CA ") ~  "California",
+    str_detect(contributor_address, " CO ") ~ "Colorado",
+    str_detect(contributor_address, " CT ") ~  "Connecticut",
+    str_detect(contributor_address, " DE ") ~  "Delaware",
+    str_detect(contributor_address, " FL ") ~  "Florida",
+    str_detect(contributor_address, " GA ") ~  "Georgia",
+    str_detect(contributor_address, " HI ") ~ "Hawaii",
+    str_detect(contributor_address, " ID ") ~  "Idaho",
+    str_detect(contributor_address, " IL ") ~  "Illinois",
+    str_detect(contributor_address, " IN ") ~  "Indiana",
+    str_detect(contributor_address, " IA ") ~  "Iowa",
+    str_detect(contributor_address, " KS ") ~ "Kansas",
+    str_detect(contributor_address, " KY ") ~  "Kentucky",
+    str_detect(contributor_address, " LA ") ~  "Louisiana",
+    str_detect(contributor_address, " ME ") ~  "Maine",
+    str_detect(contributor_address, " MD ") ~  "Maryland",
+    str_detect(contributor_address, " MA ") ~  "Massachusetts",
+    str_detect(contributor_address, " MI ") ~  "Michigan",
+    str_detect(contributor_address, " MN ") ~ "Minnesota",
+    str_detect(contributor_address, " MS ") ~  "Mississippi",
+    str_detect(contributor_address, " MO ") ~  "Missouri",
+    str_detect(contributor_address, " MN ") ~  "Montana",
+    str_detect(contributor_address, " NE ") ~  "Nebraska",
+    str_detect(contributor_address, " NV ") ~ "Nevada",
+    str_detect(contributor_address, " NH ") ~ "New Hampshire",
+    str_detect(contributor_address, " DC ") ~ "DC",
+    str_detect(contributor_address, " MT ") ~ "Montana",
+    TRUE ~ contributor_address
+  ))
+
+### Counting how much money Moore got from states and how many times that state came up.
+moore_state_data %>%
+mutate(contribution_date=mdy(contribution_date)) %>%
+filter(year(contribution_date == 2021) %>% 
+group_by(contributor_state) %>%
+summarise(total_state = sum(contribution_amount),
+            mean_amount= mean(contribution_amount),
+          n=n()) %>%
+  arrange(desc(total_state)
+
+moore_state_data %>% 
+group_by(contributor_state) %>% 
+summarise(total_state =sum(contribution_amount))
+
+total_moore %>%
+summarise(all_state = sum(total_state)
+
+# Display results of code below this codeblock
+
+```
+
+
+
+
+### Sentence 3
+
+* **Sentence text**: John B. King, former secretary of Education under President Barack Obama, raised $2.2 million in campaign funding last year. 
+
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+The answer I got was $2,018,222 instead of $2.2 million in 2021. We cleaned up the data pretty well honestly which was great. I'm unsure of what caused us to be off though. Maybe we filtered for incorrect dates but we are very close to what Stephen got which is great!
+
+
+```{r}
+# Put code to reverse engineer sentence here
+```{r}
+
+king_john_reciepts <- read_csv("data/king_john_reciepts.csv")
+
+### cleaning names
+king_john_reciepts <- king_john_reciepts %>% 
+clean_names()
+
+### making the dates column correct
+king_john_reciepts <- king_john_reciepts %>% 
+mutate(contribution_date=mdy(contribution_date))
+
+### Creating a state column
+king_john_reciepts <- king_john_reciepts %>% 
+   mutate(contributor_state = case_when(
+    str_detect(contributor_address, " NJ ") ~ "New Jersey",
+    str_detect(contributor_address, " NM ") ~ "New Mexico",
+    str_detect(contributor_address, " NY ") ~  "New York",
+    str_detect(contributor_address, " NC ") ~ "North Carolina",
+    str_detect(contributor_address, " ND ") ~ "North Dakota",
+    str_detect(contributor_address, " OH ") ~ "Ohio",
+    str_detect(contributor_address, " OK ") ~ "Oklahoma",
+    str_detect(contributor_address, " OR ") ~ "Oregon",
+    str_detect(contributor_address, " PA ") ~ "Pennsylvania",
+    str_detect(contributor_address, " RI ") ~ "Rhode Island",
+    str_detect(contributor_address, " SC ") ~ "South Carolina",
+    str_detect(contributor_address, " SD ") ~ "South Dakota",
+    str_detect(contributor_address, " TN ") ~ "Tennessee",
+    str_detect(contributor_address, " TX ") ~ "Texas",
+    str_detect(contributor_address, " UT ") ~ "Utah",
+    str_detect(contributor_address, " VT ") ~ "Vermont",
+    str_detect(contributor_address, " VA ") ~ "Virginia",
+    str_detect(contributor_address, " WA ") ~ "Washington",
+    str_detect(contributor_address, " WV ") ~ "West Virginia",
+    str_detect(contributor_address, " WI ") ~ "Wisconsin",
+    str_detect(contributor_address, " WY ") ~ "Wyoming",
+    str_detect(contributor_address, " AL ") ~ "Alabama",
+    str_detect(contributor_address, " AK ") ~  "Alaska",
+    str_detect(contributor_address, " AZ ") ~  "Arizona",
+    str_detect(contributor_address, " AR ") ~  "Arkansas",
+    str_detect(contributor_address, " CA ") ~  "California",
+    str_detect(contributor_address, " CO ") ~ "Colorado",
+    str_detect(contributor_address, " CT ") ~  "Connecticut",
+    str_detect(contributor_address, " DE ") ~  "Delaware",
+    str_detect(contributor_address, " FL ") ~  "Florida",
+    str_detect(contributor_address, " GA ") ~  "Georgia",
+    str_detect(contributor_address, " HI ") ~ "Hawaii",
+    str_detect(contributor_address, " ID ") ~  "Idaho",
+    str_detect(contributor_address, " IL ") ~  "Illinois",
+    str_detect(contributor_address, " IN ") ~  "Indiana",
+    str_detect(contributor_address, " IA ") ~  "Iowa",
+    str_detect(contributor_address, " KS ") ~ "Kansas",
+    str_detect(contributor_address, " KY ") ~  "Kentucky",
+    str_detect(contributor_address, " LA ") ~  "Louisiana",
+    str_detect(contributor_address, " ME ") ~  "Maine",
+    str_detect(contributor_address, " MD ") ~  "Maryland",
+    str_detect(contributor_address, " MA ") ~  "Massachusetts",
+    str_detect(contributor_address, " MI ") ~  "Michigan",
+    str_detect(contributor_address, " MN ") ~ "Minnesota",
+    str_detect(contributor_address, " MS ") ~  "Mississippi",
+    str_detect(contributor_address, " MO ") ~  "Missouri",
+    str_detect(contributor_address, " MN ") ~  "Montana",
+    str_detect(contributor_address, " NE ") ~  "Nebraska",
+    str_detect(contributor_address, " NV ") ~ "Nevada",
+    str_detect(contributor_address, " NH ") ~ "New Hampshire",
+    str_detect(contributor_address, " DC ") ~ "DC",
+    str_detect(contributor_address, " MT ") ~ "Montana",
+    TRUE ~ contributor_address
+  ))
+
+### Getting rid of x13 and office column
+king_john_reciepts <- king_john_reciepts %>% 
+select(-x13, -office)
+
+### Filtering to show 2021 only
+king_2021 <- king_john_reciepts %>%
+filter(between(contribution_date, as.Date('2021-01-01'), as.Date('2021-12-31')))
+
+king_john_reciepts %>% 
+filter(year(contribution_date) == 2021) %>% 
+summarize(total_2021 = sum(contribution_amount))
+
+### showing his campaign funding
+
+king_2021 %>% 
+summarize(total_2021 = sum(contribution_amount))
+
+
+
+
+
+```
+
+### Sentence 4
+
+* **Sentence text**: Moore and King collected over $100,000 each from Illinois.
+
+* **Analysis summary**: [Write up two to three sentences describing the results of your analysis.  Were you able to confirm the finding? If not, why not?]
+
+We found that both Moore and Perez got over $100,000 from Illinois. 
+
+
+```{r}
+### King Data
+
+### Sowing King's recipets from Illinois
+king_john_reciepts %>% 
+filter(contributor_state == "Illinois") %>% 
+group_by(contributor_state) %>% 
+summarize(sum_Ill = sum(contribution_amount))
+
+### Showing Moore reciepts from Illinois
+wes_moore_data <- clean_dates
+
+wes_moore_data <- wes_moore_data %>% 
+select(-x13)
+
+wes_moore_data <- wes_moore_data%>% 
+   mutate(contributor_state = case_when(
+    str_detect(contributor_address, " NJ ") ~ "New Jersey",
+    str_detect(contributor_address, " NM ") ~ "New Mexico",
+    str_detect(contributor_address, " NY ") ~  "New York",
+    str_detect(contributor_address, " NC ") ~ "North Carolina",
+    str_detect(contributor_address, " ND ") ~ "North Dakota",
+    str_detect(contributor_address, " OH ") ~ "Ohio",
+    str_detect(contributor_address, " OK ") ~ "Oklahoma",
+    str_detect(contributor_address, " OR ") ~ "Oregon",
+    str_detect(contributor_address, " PA ") ~ "Pennsylvania",
+    str_detect(contributor_address, " RI ") ~ "Rhode Island",
+    str_detect(contributor_address, " SC ") ~ "South Carolina",
+    str_detect(contributor_address, " SD ") ~ "South Dakota",
+    str_detect(contributor_address, " TN ") ~ "Tennessee",
+    str_detect(contributor_address, " TX ") ~ "Texas",
+    str_detect(contributor_address, " UT ") ~ "Utah",
+    str_detect(contributor_address, " VT ") ~ "Vermont",
+    str_detect(contributor_address, " VA ") ~ "Virginia",
+    str_detect(contributor_address, " WA ") ~ "Washington",
+    str_detect(contributor_address, " WV ") ~ "West Virginia",
+    str_detect(contributor_address, " WI ") ~ "Wisconsin",
+    str_detect(contributor_address, " WY ") ~ "Wyoming",
+    str_detect(contributor_address, " AL ") ~ "Alabama",
+    str_detect(contributor_address, " AK ") ~  "Alaska",
+    str_detect(contributor_address, " AZ ") ~  "Arizona",
+    str_detect(contributor_address, " AR ") ~  "Arkansas",
+    str_detect(contributor_address, " CA ") ~  "California",
+    str_detect(contributor_address, " CO ") ~ "Colorado",
+    str_detect(contributor_address, " CT ") ~  "Connecticut",
+    str_detect(contributor_address, " DE ") ~  "Delaware",
+    str_detect(contributor_address, " FL ") ~  "Florida",
+    str_detect(contributor_address, " GA ") ~  "Georgia",
+    str_detect(contributor_address, " HI ") ~ "Hawaii",
+    str_detect(contributor_address, " ID ") ~  "Idaho",
+    str_detect(contributor_address, " IL ") ~  "Illinois",
+    str_detect(contributor_address, " IN ") ~  "Indiana",
+    str_detect(contributor_address, " IA ") ~  "Iowa",
+    str_detect(contributor_address, " KS ") ~ "Kansas",
+    str_detect(contributor_address, " KY ") ~  "Kentucky",
+    str_detect(contributor_address, " LA ") ~  "Louisiana",
+    str_detect(contributor_address, " ME ") ~  "Maine",
+    str_detect(contributor_address, " MD ") ~  "Maryland",
+    str_detect(contributor_address, " MA ") ~  "Massachusetts",
+    str_detect(contributor_address, " MI ") ~  "Michigan",
+    str_detect(contributor_address, " MN ") ~ "Minnesota",
+    str_detect(contributor_address, " MS ") ~  "Mississippi",
+    str_detect(contributor_address, " MO ") ~  "Missouri",
+    str_detect(contributor_address, " MN ") ~  "Montana",
+    str_detect(contributor_address, " NE ") ~  "Nebraska",
+    str_detect(contributor_address, " NV ") ~ "Nevada",
+    str_detect(contributor_address, " NH ") ~ "New Hampshire",
+    str_detect(contributor_address, " DC ") ~ "DC",
+    str_detect(contributor_address, " MT ") ~ "Montana",
+    TRUE ~ contributor_address
+  ))
+
+wes_moore_data %>% 
+filter(contributor_state == "Illinois") %>% 
+group_by(contributor_state) %>% 
+summarize(sum_Ill = sum(contribution_amount))
+
+### Moore got 160,075 from Illinois
+### King got 157,659 from Illinois
+
+
+
+
+```
+
