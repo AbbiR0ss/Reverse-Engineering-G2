@@ -1,0 +1,161 @@
+---
+title: "Data Analysis Deliver 1"
+Name: "Dylan Manfre"
+output: html_notebook
+
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+plot(cars)
+
+
+setwd("/Volumes/Elements/D-Drive/University of Maryland/Classes/Fall 2022/Data Journalism/Github Repository/Data_Journalism_2022_Fall/Data_Analysis_G2/")
+
+### Load Libraries
+library(tidyverse)
+library(lubridate)
+library(janitor)
+
+
+
+### loading data for Q1
+## Elrich contribs Data 2022
+elrich_contribs_2022 <- read_csv("data/elrich_contribs_2022.csv")
+#cleaning Elrich 2022
+elrich_contribs_2022 <- elrich_contribs_2022 %>% 
+clean_names %>% 
+mutate(contribution_date = mdy(contribution_date)) %>% 
+select(-employer_name, -employer_occupation, -x13)
+
+### This has 2981 rows and 10 columns 
+
+## Elrich Data contribs 2018
+elrich_contribs_2018 <- read_csv("data/elrich_contribs_2018.csv")
+#cleanign elrich data
+elrich_contribs_2018 <-  elrich_contribs_2018 %>% 
+clean_names %>% 
+mutate(contribution_date = mdy(contribution_date)) %>% 
+select(-employer_name, -employer_occupation, -x13)
+view(elrich_contribs_2018)
+### This dataset has 10 columns and 4010 enteries.
+
+
+
+```
+
+
+```{r}
+### Blair Data contribs 2022
+blair_contribs_2022 <- read_csv("data/blair_contribs_2022.csv")
+# cleaning Blair 2022
+blair_contribs_2022 <-  blair_contribs_2022 %>% 
+clean_names %>% 
+mutate(contribution_date = mdy(contribution_date)) %>% 
+select(-employer_name, -employer_occupation, -x13)
+view(blair_contribs_2022)
+## This set has 10 columns and 556 enteries.
+
+
+## Blair Data 2018 contributions
+blair_contribs_2018 <- read_csv("data/blair_contribs_2018.csv")
+#this dataset has 881 rows and 13 columns
+blair_contribs_2018 <-  blair_contribs_2018 %>% 
+clean_names %>% 
+mutate(contribution_date = mdy(contribution_date)) %>% 
+select(-employer_name, -employer_occupation, -x13)
+view(blair_contribs_2018)
+
+# bLair 2018 expenses
+blair_expenses_2018 <- read_csv("data/blair_expenses_2018.csv")
+#this dataset has  rows and  columns
+blair_expenses_2018 <-  blair_expenses_2018 %>% 
+clean_names() %>% 
+mutate(expenditure_date = mdy(expenditure_date)) %>% 
+select(-x14)
+
+
+
+#elrich 2018 expenses
+elrich_expenses_2018 <- read_csv("data/elrich_expenses_2018.csv")
+#this dataset has 598 rows and 13 columns
+elrich_expenses_2018 <-  elrich_expenses_2018 %>% 
+clean_names() %>% 
+mutate(expenditure_date = mdy(expenditure_date)) %>% 
+select(-x14)
+
+
+
+
+
+
+```
+
+```{r}
+### Voting Results
+
+# dem precincts 18
+dem_precincts_18 <- read_csv("data/dem_precincts_18.csv")
+#this has 27791 rows and 11 columns
+dem_precincts_18 <- dem_precincts_18 %>% 
+clean_names()
+
+
+# dem precints 22
+dem_precincts_22 <- read_csv("data/dem_precincts_22.csv")
+# this has 18298 rows and 15 columns
+dem_precincts_22 <- dem_precincts_22 %>% 
+clean_names()
+
+#dem results 18
+dem_results_18 <- read_csv("data/dem_results_18.csv")
+#this has 216 rows and 11 columns
+dem_results_18 <- dem_results_18 %>% 
+clean_names()
+
+#dem results 22
+dem_results_22 <- read_csv("data/dem_results_22.csv")
+#this has 32 rows and 11 columns
+dem_results_22 <- dem_results_22 %>% 
+clean_names()
+
+
+
+
+
+
+
+
+```
+
+```{r}
+### Data for Our Q5
+
+# Elrich expenses
+elrich_expenses_2022 <- read_csv("data/elrich_expenses_2022.csv")
+# This has 14 columns and 411 rows.
+#Cleaning
+elrich_expenses_2022 <- elrich_expenses_2022 %>% 
+clean_names() %>% 
+mutate(expenditure_date = mdy(expenditure_date)) %>% 
+view(elrich_expenses_2022)
+
+# Blair expenses
+blair_expenses_2022 <- read_csv("data/blair_expenses_2022.csv")
+### this has 14 columns and 1179 rows
+# Cleaning
+blair_expenses_2022 <- blair_expenses_2022 %>% 
+clean_names() %>% 
+mutate(expenditure_date = mdy(expenditure_date)) %>% 
+select(-x14)
+
+
+```
+
+Summary of what we've done: "Essentially the goal of this was to gather each data set and make it clean so we can use it. The limitations from using the state data are that the address column contains a full address and there is not a column just for states. But we can use a str_detect_ to create this. There are also some columsn with NAs in them but they are just place holders for columns that have shown refunds in the candidates' expenditures columns. 
+
+We are curious why Elrich/Blair dont show up on dem_results_22 but do show up on every other file for this question."
+
